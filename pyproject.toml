@@ -27,7 +27,9 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 
-dependencies = []
+dependencies = [
+  "pydantic",
+]
 
 [project.urls]
 Repository = "https://github.com/timkpaine/bigbrother"
