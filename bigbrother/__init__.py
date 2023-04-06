@@ -44,6 +44,13 @@ def _install_watcher(obj: T, watcher: Callable[[T, str, Any], None]) -> T:
     # Library types
     # Pydantic object
     if BaseModel and isinstance(obj, BaseModel):
+        # iterate through fields doing the same
+        for key, value in obj.__dict__.items():
+            # TODO is this good enough?
+            if isinstance(value, BaseModel):
+                obj.__dict__[key] = _install_watcher(value, watcher)
+
+        # replace dict with watched version
         object.__setattr__(obj, "__dict__", _install_watcher(obj.__dict__, _partial(watcher, obj)))
         return obj
 
@@ -60,3 +67,6 @@ def _install_watcher(obj: T, watcher: Callable[[T, str, Any], None]) -> T:
 
 def watch(obj: T, watcher: Callable[[T, str, Any], None]) -> T:
     return _install_watcher(obj, watcher)
+
+
+__all__ = ["watch", "__version__"]
