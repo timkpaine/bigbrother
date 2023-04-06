@@ -5,16 +5,28 @@ from typing import Any, Callable, Dict, List, Set, TypeVar
 
 from .generic import _replacement_setattr, _replacement_setitem
 from .builtins import _ObservedDict, _ObservedList, _ObservedSet
-from .libraries import _Pydantic__setattr__
 
 
 try:
     from pydantic import BaseModel
+
 except ImportError:
     BaseModel = None
 
 
 T = TypeVar("T")
+
+
+def _partial(watcher, obj):
+    def _watcher_wrapper(*args, **kwargs):
+        if args:
+            args = args[1:]
+        if kwargs:
+            kwargs.pop("obj", None)
+            kwargs.pop("self", None)
+        return watcher(obj, *args, **kwargs)
+
+    return _watcher_wrapper
 
 
 def _install_watcher(obj: T, watcher: Callable[[T, str, Any], None]) -> T:
@@ -30,11 +42,13 @@ def _install_watcher(obj: T, watcher: Callable[[T, str, Any], None]) -> T:
         return _ObservedDict(obj, watcher)
 
     # Library types
+    # Pydantic object
     if BaseModel and isinstance(obj, BaseModel):
-        # replace model's setattr
-        setattr(obj, "__setattr__", MethodType(_Pydantic__setattr__(watcher=watcher), obj))
+        object.__setattr__(obj, "__dict__", _install_watcher(obj.__dict__, _partial(watcher, obj)))
+        return obj
 
-        # TODO recursively replace types
+    # Pydantic class
+    # TODO
 
     # Others
     if hasattr(obj, "__setitem__"):
