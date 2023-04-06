@@ -52,16 +52,11 @@ semgrep:
 #########
 # TESTS #
 #########
-test-py:  ## run python tests
+test:  ## run python tests
 	python -m pytest -v bigbrother/tests --junitxml=junit.xml
 
-coverage-py:  ## run tests and collect test coverage
-	python -m pytest -v bigbrother/tests --junitxml=junit.xml --cov=bigbrother --cov-report=xml:.coverage/coverage.xml --cov-report=html:.coverage/coverage.html --cov-branch --cov-fail-under=80 --cov-report term-missing
-
-show-coverage: coverage-py  ## show interactive python coverage viewer
-	cd .coverage && PYTHONBUFFERED=1 python -m http.server | sec -u "s/0\.0\.0\.0/$$(hostname)/g"
-
-test: test-py  ## run all tests
+coverage:  ## run tests and collect test coverage
+	python -m pytest -v bigbrother/tests --junitxml=junit.xml --cov=bigbrother --cov-branch --cov-fail-under=80 --cov-report term-missing
 
 # Alias
 tests: test
