@@ -44,26 +44,21 @@ jobs:
         cache-dependency-path: 'pyproject.toml'
 
     - name: Install dependencies
-      run: |
-        make develop
+      run: make develop
 
     - name: Lint
-      run: |
-        make lint
+      run: make lint
       if: ${{ matrix.os == 'ubuntu-latest' }}
 
     - name: Checks
-      run: |
-        make checks
+      run: make checks
       if: ${{ matrix.os == 'ubuntu-latest' }}
 
     - name: Build
-      run: |
-        make build
+      run: make build
 
     - name: Test
-      run: |
-        make tests
+      run: make coverage
       if: ${{ matrix.os == 'ubuntu-latest' }}
 
     - name: Upload test results (Python)
