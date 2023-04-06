@@ -11,7 +11,7 @@ name = "bigbrother"
 authors = [{name = "Tim Paine", email = "t.paine154@gmail.com"}]
 description="A library for object observability"
 readme = "README.md"
-license = { file = "LICENSE", text = "Apache-2.0" }
+license = { text = "Apache-2.0" }
 version = "0.1.0"
 requires-python = ">=3.8"
 keywords = ["observer", "observer-pattern"]
