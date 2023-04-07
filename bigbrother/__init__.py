@@ -1,4 +1,4 @@
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 from types import MethodType
 from typing import Any, Callable, Dict, List, Set, TypeVar
