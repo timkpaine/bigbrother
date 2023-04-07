@@ -99,3 +99,6 @@ lib64/
 
 # Mac
 .DS_Store
+
+# Experiments
+tmp.py

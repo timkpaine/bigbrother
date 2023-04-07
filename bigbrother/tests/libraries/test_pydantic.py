@@ -39,6 +39,7 @@ class TestPydantic:
         x.d = my_sub_model
 
         assert called[0]
+        assert len(called) == 1
         assert x.d == my_sub_model
 
     def test_pydantic_setattr_sub(self):
@@ -48,7 +49,7 @@ class TestPydantic:
 
         called = []
 
-        instance = x.d
+        instance = x
         method_name = "setitem"
         expected_args = ("x", [1])
         expected_kwargs = {}
@@ -61,9 +62,35 @@ class TestPydantic:
             assert args == expected_args
             assert kwargs == expected_kwargs
 
-        x = watch(x, track_changes)
+        x = watch(x, track_changes, deepstate=True)
 
         x.d.x = [1]
 
         assert called[0]
+        assert len(called) == 1
         assert x.d.x == [1]
+
+    def test_pydantic_setattr_deep(self):
+        my_sub_model = MySubModel()
+        my_other_sub_model = MyOtherSubModel()
+        x = MyModel(a=my_sub_model, b=my_other_sub_model)
+
+        called = []
+
+        def track_changes(obj, method, *args, **kwargs):
+            called.append(True)
+            print(f"method: {method} args: {args} kwargs: {kwargs}")
+
+        x = watch(x, track_changes, deepstate=True)
+
+        x.d.x = [1]
+        x.d.x.append(2)
+        x.b.y["a"] = 1
+        x.e.append(1)
+
+        print(called)
+        assert x.d.x == [1, 2]
+        assert x.b.y == {"a": 1}
+        assert x.e == [1]
+        assert all(called)
+        assert len(called) == 4

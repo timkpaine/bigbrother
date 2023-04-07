@@ -4,11 +4,19 @@ from types import MethodType
 from typing import Any, Callable, Dict, List, Set, TypeVar
 
 from .generic import _replacement_setattr, _replacement_setitem
-from .builtins import _ObservedDict, _ObservedList, _ObservedSet
+from .builtins import (
+    _createObservedDict,
+    _ObservedDict,
+    _createObservedList,
+    _ObservedList,
+    _createObservedSet,
+    _ObservedSet,
+)
 
 
 try:
     from pydantic import BaseModel
+    from .libraries.pydantic import _install_watcher_pydantic
 
 except ImportError:
     BaseModel = None
@@ -29,44 +37,46 @@ def _partial(watcher, obj):
     return _watcher_wrapper
 
 
-def _install_watcher(obj: T, watcher: Callable[[T, str, Any], None]) -> T:
+def _install_watcher(obj: T, watcher: Callable[[T, str, Any], None], recursive: bool = False) -> T:
     # Standard mutable types
-    if isinstance(obj, List):
+    if isinstance(obj, List) and not isinstance(obj, _ObservedList):
         # can't mutate list so replace with watcher variant
-        return _ObservedList(obj, watcher)
+        return _createObservedList(watcher, recursive=recursive, _install_watcher=_install_watcher)(obj)
 
-    if isinstance(obj, Set):
-        return _ObservedSet(obj, watcher)
+    if isinstance(obj, Set) and not isinstance(obj, _ObservedSet):
+        return _createObservedSet(watcher, recursive=recursive, _install_watcher=_install_watcher)(obj)
 
-    if isinstance(obj, Dict):
-        return _ObservedDict(obj, watcher)
+    if isinstance(obj, Dict) and not isinstance(obj, _ObservedDict):
+        return _createObservedDict(watcher, recursive=recursive, _install_watcher=_install_watcher)(obj)
 
     # Library types
     # Pydantic object
     if BaseModel and isinstance(obj, BaseModel):
-        # iterate through fields doing the same
-        for key, value in obj.__dict__.items():
-            # TODO is this good enough?
-            if isinstance(value, BaseModel):
-                obj.__dict__[key] = _install_watcher(value, watcher)
-
-        # replace dict with watched version
-        object.__setattr__(obj, "__dict__", _install_watcher(obj.__dict__, _partial(watcher, obj)))
-        return obj
+        return _install_watcher_pydantic(obj=obj, watcher=watcher, recursive=recursive, _install_watcher=_install_watcher)
 
     # Pydantic class
     # TODO
 
     # Others
-    if hasattr(obj, "__setitem__"):
-        setattr(obj, "__setitem__", MethodType(_replacement_setitem, obj))
-    if hasattr(obj, "__setattr__"):
-        setattr(obj, "__setattr__", MethodType(_replacement_setattr, obj))
+    try:
+        if hasattr(obj, "__setitem__"):
+            object.__setattr__(obj, "__setitem__", MethodType(_replacement_setitem, obj))
+    except AttributeError:
+        # Ignore
+        pass
+
+    try:
+        if hasattr(obj, "__setattr__"):
+            object.__setattr__(obj, "__setattr__", MethodType(_replacement_setattr, obj))
+    except AttributeError:
+        # Ignore
+        pass
+
     return obj
 
 
-def watch(obj: T, watcher: Callable[[T, str, Any], None]) -> T:
-    return _install_watcher(obj, watcher)
+def watch(obj: T, watcher: Callable[[T, str, Any], None], deepstate: bool = False) -> T:
+    return _install_watcher(obj, watcher, recursive=deepstate)
 
 
 __all__ = ["watch", "__version__"]
