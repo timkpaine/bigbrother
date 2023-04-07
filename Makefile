@@ -23,8 +23,8 @@ lint: lint-py  ## run all lints
 lints: lint
 
 fix-py:  ## fix python formatting with black
-	python -m ruff bigbrother/ setup.py --fix
 	python -m black bigbrother/ setup.py
+	python -m ruff bigbrother/ setup.py --fix
 fix: fix-py  ## run all autofixers
 
 # alias
