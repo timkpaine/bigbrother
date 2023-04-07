@@ -23,7 +23,7 @@ x[1] = "x"
 # prints: method: setitem, args: (1, 'x'), kwargs: {}
 ```
 
-`bigbrother` can also recursively embed itself recursively in your object by passing in argument `deepstate=True`.
+`bigbrother` can also embed itself recursively in your object by passing in argument `deepstate=True`.
 
 
 ## Supported types
