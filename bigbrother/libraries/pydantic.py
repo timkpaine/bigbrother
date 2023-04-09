@@ -26,5 +26,5 @@ def _install_watcher_pydantic(obj: BaseModel, watcher: Callable[[BaseModel, str,
             #     obj.__dict__[key] = _install_watcher(value, watcher, recursive=recursive)
             ...
         # replace dict with watched version
-        object.__setattr__(obj, "__dict__", _install_watcher(obj.__dict__, watcher=_partial(watcher, obj), recursive=recursive))
+        object.__setattr__(obj, "__dict__", _install_watcher(obj.__dict__, watcher=_partial(watcher, ref=obj), recursive=recursive))
         return obj

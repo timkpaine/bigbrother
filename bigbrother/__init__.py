@@ -1,7 +1,7 @@
 __version__ = "0.1.2"
 
 from types import MethodType
-from typing import Any, Callable, Dict, List, Set, TypeVar
+from typing import Any, Callable, Dict, List, Set, Tuple, TypeVar
 
 from .generic import _replacement_setattr, _replacement_setitem
 from .builtins import (
@@ -37,7 +37,7 @@ def _partial(watcher, obj):
     return _watcher_wrapper
 
 
-def _install_watcher(obj: T, watcher: Callable[[T, str, Any], None], recursive: bool = False) -> T:
+def _install_watcher(obj: T, watcher: Callable[[T, str, T, Tuple, Dict], None], recursive: bool = False) -> T:
     # Standard mutable types
     if isinstance(obj, List) and not isinstance(obj, _ObservedList):
         # can't mutate list so replace with watcher variant
@@ -75,7 +75,7 @@ def _install_watcher(obj: T, watcher: Callable[[T, str, Any], None], recursive: 
     return obj
 
 
-def watch(obj: T, watcher: Callable[[T, str, Any], None], deepstate: bool = False) -> T:
+def watch(obj: T, watcher: Callable[[T, str, T, Tuple, Dict], None], deepstate: bool = False) -> T:
     return _install_watcher(obj, watcher, recursive=deepstate)
 
 

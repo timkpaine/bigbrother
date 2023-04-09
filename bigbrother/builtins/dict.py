@@ -20,7 +20,7 @@ class _ObservedDict(Dict):
 
     def _notify_watcher(self, method, *args, **kwargs):
         if self._watcher_ready:
-            self.__class__._watcher(self, method, *args, **kwargs)
+            self.__class__._watcher(self, method, self, args, kwargs)
 
     def clear(self, *args, **kwargs):
         self._notify_watcher("clear", *args, **kwargs)
@@ -37,7 +37,7 @@ class _ObservedDict(Dict):
     def update(self, __m, **kwargs):
         other = dict(__m, **kwargs)
         if self.__class__._recursive:
-            other = self.__class__._install_watcher(other, watcher=_partial(self.__class__._watcher, self), recursive=self._recursive)
+            other = self.__class__._install_watcher(other, watcher=_partial(self.__class__._watcher, ref=self), recursive=self._recursive)
         self._notify_watcher("update", other)
         return super().update(other)
 
@@ -47,8 +47,8 @@ class _ObservedDict(Dict):
 
     def __setitem__(self, __key, __value):
         if self._recursive:
-            __key = self.__class__._install_watcher(__key, watcher=_partial(self.__class__._watcher, self), recursive=self._recursive)
-            __value = self.__class__._install_watcher(__value, watcher=_partial(self.__class__._watcher, self), recursive=self._recursive)
+            __key = self.__class__._install_watcher(__key, watcher=_partial(self.__class__._watcher, ref=self), recursive=self._recursive)
+            __value = self.__class__._install_watcher(__value, watcher=_partial(self.__class__._watcher, ref=self), recursive=self._recursive)
         self._notify_watcher("setitem", __key, __value)
         return super().__setitem__(__key, __value)
 
