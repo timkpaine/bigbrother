@@ -28,13 +28,13 @@ class TestPydantic:
         x = MyModel(a=my_sub_model, b=my_other_sub_model)
 
         x, called = create_tester(
-            x,
-            "setitem",
-            (
+            instance=x,
+            method_name="setitem",
+            expected_args=(
                 "d",
                 my_sub_model,
             ),
-            {},
+            expected_kwargs={},
         )
         x.d = my_sub_model
 
@@ -49,12 +49,12 @@ class TestPydantic:
 
         called = []
 
-        instance = x
+        instance = x.d
         method_name = "setitem"
         expected_args = ("x", [1])
         expected_kwargs = {}
 
-        def track_changes(obj, method, *args, **kwargs):
+        def track_changes(obj, method, ref, args, kwargs):
             called.append(True)
             print(f"method: {method} args: {args} kwargs: {kwargs}")
             assert obj == instance

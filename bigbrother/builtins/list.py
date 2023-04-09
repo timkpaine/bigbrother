@@ -20,12 +20,12 @@ class _ObservedList(List):
 
     def _notify_watcher(self, method, *args, **kwargs):
         if self._watcher_ready:
-            self.__class__._watcher(self, method, *args, **kwargs)
+            self.__class__._watcher(self, method, self, args, kwargs)
 
     def append(self, __object: Any):
         self._notify_watcher("append", __object)
         if self._recursive:
-            __object = self.__class__._install_watcher(__object, watcher=_partial(self.__class__._watcher, self), recursive=self._recursive)
+            __object = self.__class__._install_watcher(__object, watcher=_partial(self.__class__._watcher, ref=self), recursive=self._recursive)
         return super().append(__object)
 
     def clear(self, *args, **kwargs):
@@ -35,13 +35,13 @@ class _ObservedList(List):
     def extend(self, __iterable):
         self._notify_watcher("extend", __iterable)
         if self._recursive:
-            __iterable = self.__class__._install_watcher(list(__iterable), watcher=_partial(self.__class__._watcher, self), recursive=self._recursive)
+            __iterable = self.__class__._install_watcher(list(__iterable), watcher=_partial(self.__class__._watcher, ref=self), recursive=self._recursive)
         return super().extend(__iterable)
 
     def insert(self, __key: int, __value: Any):
         self._notify_watcher("insert", __key, __value)
         if self._recursive:
-            __value = self.__class__._install_watcher(__value, watcher=_partial(self.__class__._watcher, self), recursive=self._recursive)
+            __value = self.__class__._install_watcher(__value, watcher=_partial(self.__class__._watcher, ref=self), recursive=self._recursive)
         return super().insert(__key, __value)
 
     def pop(self, *args, **kwargs):
@@ -63,7 +63,7 @@ class _ObservedList(List):
     def __setitem__(self, __key: int, __value: Any):
         self._notify_watcher("setitem", __key, __value)
         if self._recursive:
-            __value = self.__class__._install_watcher(__value, watcher=_partial(self.__class__._watcher, self), recursive=self._recursive)
+            __value = self.__class__._install_watcher(__value, watcher=_partial(self.__class__._watcher, ref=self), recursive=self._recursive)
         return super().__setitem__(__key, __value)
 
 

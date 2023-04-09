@@ -13,7 +13,7 @@ An evil, awful, terrible, no-good library for watching objects for mutation. Do 
 ```python
 x = {1: "a", 2: "b", 3: "c"}
 
-def track_changes(obj, method, *args, **kwargs):
+def track_changes(obj, method, ref, call_args, call_kwargs):
     print(f"method: {method}, args: {args}, kwargs: {kwargs}")
 
 x = watch(x, track_changes)
@@ -24,6 +24,22 @@ x[1] = "x"
 ```
 
 `bigbrother` can also embed itself recursively in your object by passing in argument `deepstate=True`.
+
+
+## Callback
+
+```python
+def callback(obj, method, ref, call_args, call_kwargs):
+    '''Callback called when object is mutated
+
+    Args:
+        obj (Any): The object being mutated via `method`
+        method (str): The method called on the object (dunders removed)
+        ref (Any): Reference object. If callback installed recursively, `ref` will be the entrypoint
+        call_args (Tuple[Any]): Positional arguments that `method` was called with on `obj`
+        call_kwargs (Dict[Any, Any]): Keyword arguments that `method` was called with on `obj`
+    '''
+```
 
 
 ## Supported types

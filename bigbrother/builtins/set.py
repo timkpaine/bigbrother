@@ -22,12 +22,12 @@ class _ObservedSet(Set):
 
     def _notify_watcher(self, method, *args, **kwargs):
         if self._watcher_ready:
-            self.__class__._watcher(self, method, *args, **kwargs)
+            self.__class__._watcher(self, method, self, args, kwargs)
 
     def add(self, __element: Any):
         self._notify_watcher("add", __element)
         if self._recursive:
-            __element = self.__class__._install_watcher(__element, watcher=_partial(self.__class__._watcher, self), recursive=self._recursive)
+            __element = self.__class__._install_watcher(__element, watcher=_partial(self.__class__._watcher, ref=self), recursive=self._recursive)
         return super().add(__element)
 
     def clear(self, *args, **kwargs):
@@ -65,7 +65,7 @@ class _ObservedSet(Set):
         self._notify_watcher("update", *args)
         s = set(*args)
         if self._recursive:
-            s = self._install_watcher(s, watcher=_partial(self.__class__._watcher, self), recursive=self._recursive)
+            s = self._install_watcher(s, watcher=_partial(self.__class__._watcher, ref=self), recursive=self._recursive)
         return super().update(s)
 
     def __setattr__(self, *args, **kwargs):
