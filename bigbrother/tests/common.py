@@ -1,4 +1,5 @@
 from bigbrother import watch
+from pydantic import BaseModel
 
 
 def create_tester(instance, method_name, expected_ref=None, expected_args=None, expected_kwargs=None):
@@ -10,8 +11,13 @@ def create_tester(instance, method_name, expected_ref=None, expected_args=None, 
     def track_changes(obj, method, ref, args, kwargs):
         called.append(True)
         print(f"method: {method} args: {args} kwargs: {kwargs}")
-        print(ref, expected_ref)
-        assert obj == instance
+        print(f"ref: {ref} expected_ref: {expected_ref}")
+        print(f"obj: {obj} instance: {instance}")
+        print(f"type obj: {type(obj)} type instance: {type(instance)}")
+        if isinstance(instance, BaseModel):
+            assert obj == instance.__dict__
+        else:
+            assert obj == instance
         assert ref == expected_ref
         assert method == method_name
         assert args == expected_args

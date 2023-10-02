@@ -57,7 +57,9 @@ class TestPydantic:
         def track_changes(obj, method, ref, args, kwargs):
             called.append(True)
             print(f"method: {method} args: {args} kwargs: {kwargs}")
-            assert obj == instance
+            print(type(obj))
+            print(type(instance))
+            assert obj == instance.__dict__
             assert method == method_name
             assert args == expected_args
             assert kwargs == expected_kwargs
