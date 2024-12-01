@@ -15,16 +15,16 @@ install:  ## install library
 # LINTS #
 #########
 lint-py:  ## run python linter with flake8 and black
-	python -m ruff bigbrother setup.py
-	python -m black --check bigbrother setup.py
+	python -m ruff check bigbrother setup.py
+	python -m ruff format --check bigbrother setup.py
 lint: lint-py  ## run all lints
 
 # Alias
 lints: lint
 
 fix-py:  ## fix python formatting with black
-	python -m black bigbrother/ setup.py
-	python -m ruff bigbrother/ setup.py --fix
+	python -m ruff check --fix bigbrother/ setup.py
+	python -m ruff format bigbrother/ setup.py
 fix: fix-py  ## run all autofixers
 
 # alias
