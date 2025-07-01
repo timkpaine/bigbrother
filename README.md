@@ -1,13 +1,13 @@
 # bigbrother
 An evil, awful, terrible, no-good library for watching objects for mutation. Do not use this library.
 
-[![Build Status](https://github.com/timkpaine/bigbrother/workflows/Build%20Status/badge.svg?branch=main)](https://github.com/timkpaine/bigbrother/actions?query=workflow%3A%22Build+Status%22)
-[![Coverage](https://codecov.io/gh/timkpaine/bigbrother/branch/main/graph/badge.svg)](https://codecov.io/gh/timkpaine/bigbrother)
-[![License](https://img.shields.io/github/license/timkpaine/bigbrother)](https://github.com/timkpaine/bigbrother)
+[![Build Status](https://github.com/1kbgz/bigbrother/workflows/Build%20Status/badge.svg?branch=main)](https://github.com/1kbgz/bigbrother/actions?query=workflow%3A%22Build+Status%22)
+[![Coverage](https://codecov.io/gh/1kbgz/bigbrother/branch/main/graph/badge.svg)](https://codecov.io/gh/1kbgz/bigbrother)
+[![License](https://img.shields.io/github/license/1kbgz/bigbrother)](https://github.com/1kbgz/bigbrother)
 [![PyPI](https://img.shields.io/pypi/v/bigbrother.svg)](https://pypi.python.org/pypi/bigbrother)
 
 ## Overview
-`bigbrother` is a mutation observer library. You can use it to watch your objects for changes. When your object changes, `bigbrother` will trigger your choice of callback. 
+`bigbrother` is a mutation observer library. You can use it to watch your objects for changes. When your object changes, `bigbrother` will trigger your choice of callback.
 
 
 ```python
@@ -45,7 +45,7 @@ def callback(obj, method, ref, call_args, call_kwargs):
 ## Supported types
 
 ### Builtins
-Most builtin types are read-only and cannot have their method structure mutated, so we observe via replacement with thin wrappers. 
+Most builtin types are read-only and cannot have their method structure mutated, so we observe via replacement with thin wrappers.
 
 - `list` via `_ObservedList`
     - `append`

@@ -8,7 +8,7 @@ build-backend="setuptools.build_meta"
 
 [project]
 name = "bigbrother"
-authors = [{name = "Tim Paine", email = "t.paine154@gmail.com"}]
+authors = [{name = "1kbgz", email = "dev@1kbgz.com"}]
 description="A library for object observability"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -32,8 +32,8 @@ dependencies = [
 ]
 
 [project.urls]
-Repository = "https://github.com/timkpaine/bigbrother"
-Homepage = "https://github.com/timkpaine/bigbrother"
+Repository = "https://github.com/1kbgz/bigbrother"
+Homepage = "https://github.com/1kbgz/bigbrother"
 
 [project.optional-dependencies]
 develop = [
